@@ -2,14 +2,24 @@ import csv from "csvtojson";
 import fs from "fs";
 
 const csvFilePath='./csv/nodejs-hw1-ex1.csv';
+const readStream=require('fs').createReadStream(csvFilePath);
 
-csv()
-.fromFile(csvFilePath)
-.then((jsonObj)=>{
-    const textToWretxtResult = jsonObj.map((item) => JSON.stringify(item)).join('\n');
-    fs.writeFile("result.txt", textToWretxtResult, function(err) {
-        if (err) {
-            console.log(err);
-        }
-    }); 
+readStream.on('error', ()=>{
+    console.log('File does not exist!')
 });
+
+const result = [];
+
+readStream.pipe(
+    csv()
+    .on('data',(data)=>{
+        result.push(Buffer.from(data))
+    })
+    .on('done', ()=>{
+        fs.writeFile("result.txt", result.join('\n'), function(err) {
+            if (err) {
+                console.log(err);
+            }
+        });
+    })
+);
