@@ -16,7 +16,7 @@ readStream.pipe(
         result.push(Buffer.from(data))
     })
     .on('done', ()=>{
-        fs.writeFile("result.txt", result.join('\n'), function(err) {
+        fs.writeFile("result.txt", result.join(''), function(err) {
             if (err) {
                 console.log(err);
             }
